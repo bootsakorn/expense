@@ -3,48 +3,56 @@ package csku.expense;
 import org.junit.Before;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
+import java.util.Date;
 import static org.junit.jupiter.api.Assertions.*;
 
 class ExpenseTest {
     Expense expense;
-    String listExpenseDetailEmpty = "\ntotal : 0.0";
-    String listExpenseDetailNotEmpty = "1   in : by mom = 500.0\n2   out : KFC = -199.0\ntotal : 301.0";
+    Date date;
 
     @BeforeEach
     void init() {
+        date = new Date();
         expense = new Expense();
     }
 
     @Test
     void addListExpenseCaseIn() {
-        expense.addListExpense("in", "by mom", 500);
+        expense.addListExpense("in", "by mom", 500, date);
         assertEquals(500, expense.showTotal());
     }
 
     @Test
     void addListExpenseCaseOut() {
-        expense.addListExpense("out", "KFC", 199);
+        expense.addListExpense("out", "KFC", 199, date);
         assertEquals(-199, expense.showTotal());
     }
 
     @Test
     void addListExpenseCaseInOut() {
-        expense.addListExpense("in", "by mom", 500);
-        expense.addListExpense("out", "KFC", 199);
+        expense.addListExpense("in", "by mom", 500, date);
+        expense.addListExpense("out", "KFC", 199 , date);
         assertEquals(301, expense.showTotal());
     }
 
     @Test
-    void showListExpenseDetailsCaseNotEmpty(){
-        expense.addListExpense("in", "by mom", 500);
-        expense.addListExpense("out", "KFC", 199);
-        assertEquals(listExpenseDetailNotEmpty, expense.showListExpenseDetails());
+    void editListExpenseDetail() {
+        expense.addListExpense("in", "by mom", 500, date);
+        expense.editList(1, "by dad");
+        assertEquals(expense.getList(1).getDetail(), "by dad");
     }
 
     @Test
-    void showListExpenseDetailsCaseEmpty(){
-        assertEquals(listExpenseDetailEmpty, expense.showListExpenseDetails());
+    void editListExpenseAmount() {
+        expense.addListExpense("in", "by mom", 500, date);
+        expense.editList(1, 2000);
+        assertEquals(expense.getList(1).getAmount(), 2000.0);
     }
 
+    @Test
+    void editListExpenseType() {
+        expense.addListExpense("in", "by mom", 500, date);
+        expense.editList(1, "out");
+        assertEquals(expense.getList(1).getType(), "out");
+    }
 }
